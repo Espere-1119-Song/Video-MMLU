@@ -1,0 +1,9 @@
+dataset_path: Enxin/lmms_video_mmlu
+dataset_kwargs:
+  token: True
+  video: True
+  cache_dir: lmms_video_mmlu
+
+metadata:
+  version: 0.0
+  gpt_eval_model_name: gpt-4o-mini
