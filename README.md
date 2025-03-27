@@ -11,7 +11,7 @@
 
 
 
-<img src="assets/teasor.png" align="center">
+<img src="assets/teaser.png" align="center">
 
 
 **TODO**
