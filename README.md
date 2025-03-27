@@ -22,7 +22,7 @@ Imagine a classroom where a large multimodal model is the **student** and Video-
 
 ## Evaluation Pipeline
 
-We evaluate the Video-MMLU benchmark on two open-source multimodal large model evaluation frameworks, [lmms-eval](https://github.com/EvolvingLMMs-Lab/lmms-eval) and [VLMEvalkit](https://github.com/open-compass/VLMEvalKit). We use Qwen2.5-72B-Instruct as the judge model. Since loading the judge model will occupy memory and cause waste, we provide two ways to evaluate, including using SiliconFlowAPI (only support by VLMEvalkit) and local load Qwen2.5-72B for post-processing.
+We evaluate the Video-MMLU benchmark on two open-source multimodal large model evaluation frameworks, [lmms-eval](https://github.com/EvolvingLMMs-Lab/lmms-eval) and [VLMEvalkit](https://github.com/open-compass/VLMEvalKit). We use Qwen2.5-72B-Instruct as the judge model. Since loading the judge model will occupy memory and cause waste, we provide two ways to evaluate, including using `SiliconFlowAPI` (only support by VLMEvalkit) and local load Qwen2.5-72B for post-processing.
 
 For more detailed, please refer to [Eval Docs](https://github.com/Espere-1119-Song/Video-MMLU/blob/main/EVAL.md).
 
