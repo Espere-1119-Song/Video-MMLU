@@ -11,4 +11,4 @@ A Massive Multi-Discipline Lecture Understanding Benchmark
 - [ ] Upload keyframes
 - [ ] Upload figures_in_paper
 - [ ] Upload lmms-eval code
-- [ ] Upload 
+- [x] Upload VLMEvalkit code
