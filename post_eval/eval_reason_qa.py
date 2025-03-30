@@ -3,34 +3,32 @@ import json
 import ast
 import pandas as pd
 import os
-import json
+import argparse
+import numpy as np
 from glob import glob
 import random
-import numpy as np
 
-backend_config = TurbomindEngineConfig(tp=4)
-gen_config = GenerationConfig(top_p=0.8,
-                              top_k=40,
-                              temperature=0,
-                              max_new_tokens=32)
-pipe = pipeline('Qwen/Qwen2.5-72B-Instruct',
-                backend_config=backend_config)
-
-result_folder = '/home/ubuntu/UCSD-NYU/workspace/enxin/VLMEvalKit/other_results/qa_judge'
-
-# read every file in results/pred_qa
-
-
-jsonl_files = glob('/home/ubuntu/UCSD-NYU/workspace/enxin/VLMEvalKit/other_results/qa/**/*.jsonl', recursive=True)
-
-for eval_file in jsonl_files:
-    # 获取模型名称（从文件路径中提取）
-    model_name = eval_file.split('/')[-1].split('.')[0]
-    save_path = f'/home/ubuntu/UCSD-NYU/workspace/enxin/VLMEvalKit/other_results/qa_judge/{model_name}.jsonl'
-    if os.path.exists(save_path):
-        continue
-
-    print(f"Processing {model_name}")
+def main():
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description='Evaluate reasoning QA predictions')
+    parser.add_argument('--eval_file', type=str, required=True, help='Path to the evaluation file')
+    parser.add_argument('--save_path', type=str, required=True, help='Path to save the results')
+    args = parser.parse_args()
+    
+    # Set random seeds
+    random.seed(42)
+    np.random.seed(42)
+    
+    backend_config = TurbomindEngineConfig(tp=4)
+    gen_config = GenerationConfig(top_p=0.8,
+                                  top_k=40,
+                                  temperature=0,
+                                  max_new_tokens=32)
+    pipe = pipeline('Qwen/Qwen2.5-72B-Instruct',
+                    backend_config=backend_config)
+    
+    eval_file = args.eval_file
+    save_path = args.save_path
 
     with open(eval_file, 'r') as f:
         for line in f:
@@ -40,6 +38,7 @@ for eval_file in jsonl_files:
             question = data['question']
             answer = data['answer']
             video_id = data['video_id'].split('.')[0]
+            discipline = data.get('discipline', '')  # Get discipline if available, otherwise empty string
         
             prompts = [[{
                 'role': 'system',
@@ -73,17 +72,24 @@ for eval_file in jsonl_files:
                     "For example, your response should look like this: {'pred': 'no', 'score': 3}."
             }]]
             
-            
-            response = pipe(prompts,
-                            gen_config=gen_config)
+            response = pipe(prompts, gen_config=gen_config)
             try:
                 judgement_string = response[-1].text
                 judgement_dict = ast.literal_eval(judgement_string)
             except Exception as e:
                 print(f"Error processing video {video_id}: {e}")
                 continue
-            # add the judgement_dict, video_id, question, answer, pred to the save file
+                
+            # Add the judgement_dict, video_id, question, answer, pred to the save file
             with open(save_path, 'a') as f:
-                f.write(json.dumps({'video_id': video_id, 'judgement': judgement_dict, 'question': question, 'answer': answer, 'pred': pred}) + '\n')
+                f.write(json.dumps({
+                    'video_id': video_id, 
+                    'discipline': discipline,
+                    'judgement': judgement_dict, 
+                    'question': question, 
+                    'answer': answer, 
+                    'pred': pred
+                }) + '\n')
 
-        print(f"Finished processing {model_name}")
+if __name__ == "__main__":
+    main()

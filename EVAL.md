@@ -77,9 +77,51 @@ pip install lmdeploy
 Then, run the following command to generate the predicted QA pairs.
 
 ```
-python post_eval/gener_cap.py
+python post_eval/gener_cap.py --eval_file path/to/eval_file.xlsx --save_path path/to/output.jsonl
+```
+
+Next, run the following command to get the evaluation score for each predicted QA pairs.
+```
+python post_eval/eval_cap_qa.py --eval_path path/to/eval_file.jsonl --save_file_path path/to/results.jsonl 
+```
+
+Finally, run the following command to get the final score.
+```
+python post_eval/calculate_scores.py --results_file path/to/results.jsonl --output_file path/to/summary.json
 ```
 
 #### Question-Answering
 
+Similar to the captioning evaluation, we useuse [lmdeploy](https://github.com/InternLM/lmdeploy) to accelerate the post-processing. However, we do not need to generate the predicted QA pairs, but directly evaluate the predicted QA pairs with the following command.
+```
+python post_eval/eval_reason_qa.py --eval_file path/to/eval_file.jsonl --save_path path/to/results.jsonl
+```
+
+After getting the results, run the following command to get the final score.
+```
+python post_eval/calculate_scores.py --results_file path/to/results.jsonl --output_file path/to/summary.json
+```
+
 ### lmms-eval
+
+For evaluation with lmms-eval, install additional dependencies.
+```
+cd lmms-eval && pip install -e .
+```
+We divide Video-MMLU into 2 subsets for captioning and question-answering, named `videommlu_cap` and `videommlu_qa` respectively.
+
+Since, currently lmms-eval does not support evaluation with LLM like `Qwen2.5-72B`, we only use lmms-eval to generate the output answers and get the evaluation score with additional post-processing. The example command is shown below.
+```
+accelerate launch --num_processes 8 --main_process_port 12345 -m lmms_eval \
+    --model llava_vid \
+    --model_args pretrained=lmms-lab/LLaVA-NeXT-Video-32B-Qwen,conv_template=qwen_1_5,video_decode_backend=decord,max_frames_num=32,mm_spatial_pool_mode=average,mm_newline_position=grid,mm_resampler_location=after \
+    --tasks videommlu_cap,videommlu_qa \
+    --batch_size 1 \
+    --log_samples \
+    --log_samples_suffix llava_vid_32B \
+    --output_path ./logs/
+```
+
+#### Captioning
+
+#### Question-Answering

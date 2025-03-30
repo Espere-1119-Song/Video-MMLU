@@ -61,6 +61,7 @@ def main():
             for qa in qa_gt:
                 all_cases.append({
                     'video_id': video_id,
+                    'discipline': video_sources[video_id],
                     'pred_cap': pred_cap,
                     'question': qa['surface'],
                     'answer': qa['answer']

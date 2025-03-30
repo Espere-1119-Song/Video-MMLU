@@ -2,32 +2,31 @@ from lmdeploy import pipeline, GenerationConfig, TurbomindEngineConfig
 import json
 import ast
 import os
+import argparse
 
+def main():
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description='Evaluate caption QA predictions')
+    parser.add_argument('--eval_path', type=str, required=True, help='Path to the evaluation file')
+    parser.add_argument('--save_file_path', type=str, required=True, help='Path to save the results')
+    args = parser.parse_args()
 
-backend_config = TurbomindEngineConfig(tp=8)
-gen_config = GenerationConfig(top_p=0.8,
-                              top_k=40,
-                              temperature=0.8,
-                              max_new_tokens=32)
-pipe = pipeline('Qwen/Qwen2.5-72B-Instruct',
-                backend_config=backend_config)
+    backend_config = TurbomindEngineConfig(tp=8)
+    gen_config = GenerationConfig(top_p=0.8,
+                                  top_k=40,
+                                  temperature=0.8,
+                                  max_new_tokens=32)
+    pipe = pipeline('Qwen/Qwen2.5-72B-Instruct',
+                    backend_config=backend_config)
 
-result_folder = '/home/ubuntu/UCSD-NYU/workspace/enxin/VLMEvalKit/other_results/cap_judge'
+    eval_path = args.eval_path
+    save_file_path = args.save_file_path
 
-# read every file in results/pred_qa
-pred_qa_folder = '/home/ubuntu/UCSD-NYU/workspace/enxin/VLMEvalKit/other_results/pred_qa'
-for file in os.listdir(pred_qa_folder):
-    model_name = file.split('/')[-1].split('.')[0]
-    file_path = os.path.join(pred_qa_folder, file)
-    save_file_path = os.path.join(result_folder, f'{model_name}.jsonl') 
-    if os.path.exists(save_file_path):
-        continue
-    # read each line of the file
-    print(f"Processing {model_name}")
-    with open(file_path, 'r', encoding='utf-8') as file:
+    with open(eval_path, 'r', encoding='utf-8') as file:
         for line in file:
             data = json.loads(line)
             video_id = data['video_id']
+            discipline = data['discipline']
             question = data['question']
             answer = data['answer']
             pred = data['pred_answer']
@@ -70,6 +69,7 @@ for file in os.listdir(pred_qa_folder):
                 continue
             # add the judgement_dict, video_id, question, answer, pred to the save file
             with open(save_file_path, 'a') as f:
-                f.write(json.dumps({'video_id': video_id, 'judgement': judgement_dict, 'question': question, 'answer': answer, 'pred': pred}) + '\n')
-    # print(f"Finished processing {model_name}")
+                f.write(json.dumps({'video_id': video_id, 'discipline': discipline, 'judgement': judgement_dict, 'question': question, 'answer': answer, 'pred': pred}) + '\n')
 
+if __name__ == "__main__":
+    main()
