@@ -69,7 +69,16 @@ The generated xlsx file will be found in `VLMEvalKit/outputs/$MODEL_NAME$`.
 #### Captioning
 Following [AuroraCap](https://wenhaochai.com/aurora-web), we use a divide-and-conquer approach as the evaluation metric for video detailed captioning.
 
+We use [lmdeploy](https://github.com/InternLM/lmdeploy) to accelerate the post-processing. First, install the package.
+```
+pip install lmdeploy
+```
 
+Then, run the following command to generate the predicted QA pairs.
+
+```
+python post_eval/gener_cap.py
+```
 
 #### Question-Answering
 
