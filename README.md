@@ -5,6 +5,15 @@
 </td></tr>
 </table>
 
+<table border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td><img src="https://github.com/Espere-1119-Song/Video-MMLU/blob/main/assets/zju_logo.png?raw=true" width="100"></td>
+    <td><img src="https://github.com/Espere-1119-Song/Video-MMLU/blob/main/assets/uw_logo.png?raw=true" width="100"></td>
+    <td><img src="https://github.com/Espere-1119-Song/Video-MMLU/blob/main/assets/uiuc_logo.png?raw=true" width="100"></td>
+    <td><img src="https://github.com/Espere-1119-Song/Video-MMLU/blob/main/assets/lambda_logo.png?raw=true" width="100"></td>
+  </tr>
+</table>
+
 [![](https://img.shields.io/badge/web-922133)](https://rese1f.github.io/aurora-web/)
 [![](http://img.shields.io/badge/arXiv-922133)](https://arxiv.org/abs/2410.03051)
 [![](https://img.shields.io/badge/%F0%9F%A4%97%20_VideoMMLU_benchmark-ffc107?color=ffc107&logoColor=white)](https://huggingface.co/datasets/Enxin/Video-MMLU)
