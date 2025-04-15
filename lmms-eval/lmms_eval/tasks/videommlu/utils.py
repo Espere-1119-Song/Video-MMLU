@@ -118,5 +118,5 @@ def videommlu_pass_through(results, args):
     with open(path, "w") as f:
         json.dump(stored_results, f, indent=4)
 
-    eval_logger.info(f"Your test result has been stored in {path}. Make sure you also have the val result stored to submit to the server on https://codalab.lisn.upsaclay.fr/competitions/7404#participate.")
+    eval_logger.info(f"Your test result has been stored in {path}")
 
