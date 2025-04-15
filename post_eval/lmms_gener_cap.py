@@ -1,21 +1,15 @@
-import pandas as pd
 import json
+import argparse
+import os
 import random
 import numpy as np
-import argparse
 from lmdeploy import pipeline, GenerationConfig, TurbomindEngineConfig
 
 def main():
     # Set random seeds
     random.seed(42)
     np.random.seed(42)
-    
-    # Add command line argument parsing
-    parser = argparse.ArgumentParser(description='Generate QA pairs from video descriptions')
-    parser.add_argument('--eval_file', type=str, required=True, help='Path to the evaluation Excel file')
-    parser.add_argument('--save_path', type=str, required=True, help='Path to save the output JSONL file')
-    args = parser.parse_args()
-
+    # Parse command line arguments
     backend_config = TurbomindEngineConfig(tp=8)
     gen_config = GenerationConfig(top_p=0.8,
                                   top_k=40,
@@ -23,6 +17,15 @@ def main():
                                   max_new_tokens=64)
     pipe = pipeline('Qwen/Qwen2.5-72B-Instruct',
                     backend_config=backend_config)
+    
+    parser = argparse.ArgumentParser(description='Process log file entries.')
+    parser.add_argument('--eval_file', type=str, required=True, help='Path to the input log file (JSONL format)')
+    parser.add_argument('--save_file', type=str, required=True, help='Path to save the processed output (JSONL format)')
+    args = parser.parse_args()
+
+    log_file_path = args.eval_file
+    output_file_path = args.save_file
+    all_cases = []
 
     source_file = 'source/video_mmlu.jsonl'
     video_sources = {}
@@ -44,30 +47,36 @@ def main():
                 })
             qa_pairs[video_id] = gt_qa_pairs
 
-    # Use command line arguments
-    eval_file = args.eval_file
-    save_path = args.save_path
+
+    # Ensure the output directory exists if specified with a path
+    output_dir = os.path.dirname(output_file_path)
+    if output_dir and not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
 
-    df = pd.read_excel(eval_file)
-    all_cases = []
+    with open(log_file_path, 'r', encoding='utf-8') as f:
+        # Load the entire JSON structure from the file
+        data = json.load(f)
 
-    for index, row in df.iterrows():
-        pred_cap = row['prediction']
-        video_id = row['video'].split('.')[0]
-        
-        try:
-            qa_gt = qa_pairs[video_id]
-            for qa in qa_gt:
-                all_cases.append({
-                    'video_id': video_id,
-                    'discipline': video_sources[video_id],
-                    'pred_cap': pred_cap,
-                    'question': qa['surface'],
-                    'answer': qa['answer']
-                })
-        except Exception as e:
-            continue
+        # Access the dictionary associated with the 'args' key
+        logs_data = data.get('logs') # Use .get() for safety in case 'args' is missing
+
+        for log in logs_data:
+            video_id = log['results']['video_name']
+            pred_cap = log['results']['pred']
+
+            try:
+                qa_gt = qa_pairs[video_id]
+                for qa in qa_gt:
+                    all_cases.append({
+                        'video_id': video_id,
+                        'discipline': video_sources[video_id],
+                        'pred_cap': pred_cap,
+                        'question': qa['surface'],
+                        'answer': qa['answer']
+                    })
+            except Exception as e:
+                continue
 
     for case in all_cases:
         prompts = [[{
@@ -91,7 +100,7 @@ def main():
         response = pipe(prompts, gen_config=gen_config)
         pred_answer = response[1].text
         
-        with open(save_path, 'a') as f:
+        with open(output_file_path, 'a') as f:
             json.dump({
                 'video_id': case['video_id'],
                 'question': case['question'],
@@ -99,6 +108,7 @@ def main():
                 'pred_answer': pred_answer
             }, f)
             f.write('\n')
+
 
 if __name__ == "__main__":
     main()

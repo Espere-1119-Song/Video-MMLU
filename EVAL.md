@@ -124,4 +124,35 @@ accelerate launch --num_processes 8 --main_process_port 12345 -m lmms_eval \
 
 #### Captioning
 
+We use [lmdeploy](https://github.com/InternLM/lmdeploy) to accelerate the post-processing. First, install the package.
+```
+pip install lmdeploy
+```
+
+Then, run the following command to generate the predicted QA pairs.
+
+```
+python post_eval/lmms_gener_cap.py --eval_file path/to/eval_file.json --save_path path/to/output.jsonl
+```
+
+Next, run the following command to get the evaluation score for each predicted QA pairs.
+```
+python post_eval/eval_cap_qa.py --eval_path path/to/eval_file.jsonl --save_file_path path/to/results.jsonl 
+```
+
+Finally, run the following command to get the final score.
+```
+python post_eval/calculate_scores.py --results_file path/to/results.jsonl --output_file path/to/summary.json
+```
+
 #### Question-Answering
+
+Similar to the captioning evaluation, we useuse [lmdeploy](https://github.com/InternLM/lmdeploy) to accelerate the post-processing. However, we do not need to generate the predicted QA pairs, but directly evaluate the predicted QA pairs with the following command.
+```
+python post_eval/lmms_reason_qa.py --eval_file path/to/eval_file.json --save_path path/to/results.jsonl
+```
+
+After getting the results, run the following command to get the final score.
+```
+python post_eval/calculate_scores.py --results_file path/to/results.jsonl --output_file path/to/summary.json
+```
