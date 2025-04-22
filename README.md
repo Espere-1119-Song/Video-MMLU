@@ -15,7 +15,7 @@
 </table>
 
 [![](https://img.shields.io/badge/web-922133)](https://rese1f.github.io/aurora-web/)
-[![](http://img.shields.io/badge/arXiv-922133)](https://arxiv.org/abs/2410.03051)
+[![](http://img.shields.io/badge/arXiv-922133)](http://arxiv.org/abs/2504.14693)
 [![](https://img.shields.io/badge/%F0%9F%A4%97%20_VideoMMLU_benchmark-ffc107?color=ffc107&logoColor=white)](https://huggingface.co/datasets/Enxin/Video-MMLU)
 
 Video-MMLU specifically targets videos that focus on theorem demonstrations and probleming-solving, covering mathematics, physics, and chemistry. The videos deliver dense information through numbers and formulas, pose significant challenges for video LMMs in dynamic OCR recognition and comprehension.
