@@ -66,12 +66,16 @@ def main():
     overall_accuracy = 0
     overall_avg_score = 0
     if total_samples > 0:
-        overall_accuracy = (total_correct / total_samples) * 100
-        overall_avg_score = np.mean(all_scores) if all_scores else 0
+        # Calculate overall accuracy as average of discipline accuracies
+        discipline_accuracies = [category_results[d]["accuracy"] for d in ["Math", "Physics", "Chemistry"]]
+        overall_accuracy = sum(discipline_accuracies) / 3
+        
+        # Calculate overall score as average of discipline scores (unchanged)
+        discipline_avg_scores = [category_results[d]["average_score"] for d in ["Math", "Physics", "Chemistry"]]
+        overall_avg_score = sum(discipline_avg_scores) / 3
     
-    # Calculate final score (average of the three discipline scores)
-    discipline_avg_scores = [category_results[d]["average_score"] for d in ["Math", "Physics", "Chemistry"]]
-    final_score = sum(discipline_avg_scores) / 3
+    # Final score is the same as overall_avg_score
+    final_score = overall_avg_score
     
     # Prepare the final results dictionary
     results = {
