@@ -30,10 +30,14 @@ def main():
     eval_file = args.eval_file
     save_path = args.save_path
 
-    with open(eval_file, 'r') as f:
-        for line in f:
-            data = json.loads(line)
-
+    if eval_file.endswith('.xlsx'):
+        df = pd.read_excel(eval_file)
+        data_list = df.to_dict('records')
+    else:
+        with open(eval_file, 'r') as f:
+            data_list = [json.loads(line) for line in f]
+            
+    for data in data_list:
             pred = data['pred_qa']
             question = data['question']
             answer = data['answer']
