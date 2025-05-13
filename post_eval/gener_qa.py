@@ -63,7 +63,7 @@ def main():
                     'video_id': video_id,
                     'discipline': video_sources[video_id],
                     'pred_cap': pred_cap,
-                    'question': qa['surface'],
+                    'question': qa['question'],
                     'answer': qa['answer']
                 })
         except Exception as e:
@@ -94,6 +94,7 @@ def main():
         with open(save_path, 'a') as f:
             json.dump({
                 'video_id': case['video_id'],
+                'discipline': case['discipline'],
                 'question': case['question'],
                 'answer': case['answer'],
                 'pred_answer': pred_answer
