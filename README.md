@@ -1,4 +1,4 @@
-# Video-MMLU
+】# Video-MMLU
 
 <table><tr><td>
     <strong>Video-MMLU</strong>: A Massive Multi-Discipline Lecture Understanding Benchmark.
@@ -14,7 +14,7 @@
   </tr>
 </table>
 
-[![](https://img.shields.io/badge/web-922133)](https://rese1f.github.io/aurora-web/)
+[![](https://img.shields.io/badge/web-922133)](https://enxinsong.com/Video-MMLU-web/)
 [![](http://img.shields.io/badge/arXiv-922133)](http://arxiv.org/abs/2504.14693)
 [![](https://img.shields.io/badge/%F0%9F%A4%97%20_VideoMMLU_benchmark-ffc107?color=ffc107&logoColor=white)](https://huggingface.co/datasets/Enxin/Video-MMLU)
 
