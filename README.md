@@ -1,4 +1,4 @@
-】# Video-MMLU
+# Video-MMLU
 
 <table><tr><td>
     <strong>Video-MMLU</strong>: A Massive Multi-Discipline Lecture Understanding Benchmark.
